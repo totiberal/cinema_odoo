@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>	
+        <!--ACTIONS Programación-->
+		<record id="action_sesion_form" model="ir.actions.act_window">
+            <field name="name">Sesiones</field>
+            <field name="res_model">sesiones</field>
+            <field name="view_mode">calendar</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+        </record>
+		<!--ACTIONS Cartel-->
+		<record id="action_cartel_form" model="ir.actions.act_window">
+            <field name="name">Cartel</field>
+            <field name="res_model">peliculas</field>
+            <field name="view_mode">kanban</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+			<!--<field name="view_id" ref="cartel_view"/> -->
+        </record>
+		<!--ACTIONS Taquilla-->
+		<record id="action_taquilla_form" model="ir.actions.act_window">
+            <field name="name">Taquilla</field>
+            <field name="res_model">sesiones</field>
+            <field name="view_mode">form,tree,kanban</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+        </record>
+
+		<!--SECCIONES-->
+        <menuitem id="menu_seccion" name="Taquilla" parent="menu_modulo_cine"/>
+        <!--Programación-->
+        <menuitem id="menu_gestion_sesion_lateral" name="Programación" parent="menu_seccion" action="action_sesion_form"/>
+        <!--Cartel-->
+        <menuitem id="menu_gestion_cartel_lateral" name="Cartel" parent="menu_seccion" action="action_cartel_form"/>
+		<!--Billetería-->
+        <menuitem id="menu_gestion_taquilla_lateral" name="Sesiones" parent="menu_seccion" action="action_taquilla_form"/>
+	
+		<!--SESIONES-->
+		<!--Form-->
+		<record id="sesion_form_view" model="ir.ui.view">
+			<field name="name">sesiones.form</field>
+            <field name="model">sesiones</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Sesiones">
+                    <sheet>
+						<group string="Sesión">
+							<field name="name"/>
+							<field name="sala"/>
+							<field name="date_begin"/>
+							<field name="date_end"/>
+							<field name="seats_max" readonly="1"/>
+							<field name="seats_available" readonly="1"/>      
+							<field name="entradas" widget="one2many_list">
+                       			<tree>
+                       				<field name="nb_register"/>
+                       				<field name="partner_id"/>
+                       				<field name="event_id"/>
+                       				<field name="state" invisible="1"/>	
+                        		</tree>
+  							</field>
+							<field name="state" invisible="1"/>
+						</group>
+					</sheet>	
+                </form>
+            </field>
+		</record>
+		<!--Tree-->
+		<record model ="ir.ui.view" id="sesion_tree_view">
+			<field name="name">sesion.tree</field>
+			<field name="model">sesiones</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Sesiones" default_group_by="state">
+					<field name="name"/>
+					<field name="sala"/>
+					<field name="seats_available"/>
+					<field name="date_begin"/>
+					<field name="state" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+		<!--Kanban-->
+		<record id="sesion_kanban_view" model="ir.ui.view">
+			<field name="name">sesiones.kanban</field>
+            <field name="model">sesiones</field>
+            <field name="type">kanban</field>
+            <field name="arch" type="xml">
+                <form string="Sesiones">
+                	<field name="name"/>
+                   	<field name="seats_max"/>
+					<field name="date_begin"/>
+					<field name="date_end"/>
+				<templates>
+				<t t-name="kanban-box">
+					<div class="oe_module_vignette">
+						<a class="oe_module_icon oe_kanban_action oe_kanban_action_a" data-type="open" href="#">  
+							<div class="oe_event_date ">
+								<t t-esc="record.date_begin.raw_value.getDate()"/>
+							</div>
+							<div class="oe_event_month_year">
+								<t t-esc="record.date_begin.raw_value.toString('MMM')"/>
+								<t t-esc="record.date_begin.raw_value.getFullYear()"/>  
+							</div>  
+							<div class="oe_event_time">
+								<t t-esc="record.date_begin.raw_value.toString('hh:mm tt')"/>
+								<t t-esc="record.name.raw_value.toString()"/>
+							</div>  
+						</a>    
+					</div>
+				</t>            
+				</templates>
+                </form>
+            </field>
+		</record>
+		<!--Calendar-->
+		<record id="sesion_calendar_view" model="ir.ui.view">
+		    <field name="name">Programación</field>
+		    <field name="model">sesiones</field>
+		    <field name="arch" type="xml">
+		        <calendar string="Programación" color="name" date_start="date_begin" date_stop="date_end">
+		            <field name="name"/>
+		            <field name="seats_available"/>       
+		        </calendar>
+		     </field>
+		</record>
+
+		<!--ENTRADAS-->
+		<!--form-->
+		<record id="taquilla_form_view" model="ir.ui.view">
+			<field name="name">taquilla.form</field>
+            <field name="model">entradas</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Taquilla">
+                    <sheet>
+						<group string="Entrada">
+							<!--<field name="event_id" options="{'no_create': True}"/>-->
+							<field name="partner_id"/>
+							<field name="nb_register"/>
+							<field name="precio"/>
+							<field name="total"/>
+							<field name="state" invisible="1"/>
+						</group>
+					</sheet>	
+                </form>
+            </field>
+		</record>
+	</data>
+</openerp>

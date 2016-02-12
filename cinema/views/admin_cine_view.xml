@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>	
+		
+		<!--ACTIONS-->
+		
+		<!--Salas-->
+        <record id="action_sala_form" model="ir.actions.act_window">
+            <field name="name">Salas</field>
+            <field name="res_model">salas</field>
+            <field name="view_mode">form,tree</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <!-- <field name="context">{'search_default_salas': 1}</field> -->
+        </record>
+		
+		<!--Películas-->
+		<record id="action_pelicula_form" model="ir.actions.act_window">
+            <field name="name">Peliculas</field>
+            <field name="res_model">peliculas</field>
+            <field name="view_mode">form,tree,kanban</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+			<!--<field name="view_id" ref="gestion_peliculas_view"/>-->
+        </record>
+       
+	   <!--Socios-->
+		<record id="action_socio_form" model="ir.actions.act_window">
+            <field name="name">Socios</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">form,tree,kanban</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="context">{'search_default_socios': 1}</field>
+        </record>
+		
+		<!--Empleados-->
+		<record id="action_empleados_form" model="ir.actions.act_window">
+            <field name="name">Empleados</field>
+            <field name="res_model">hr.employee</field>
+            <field name="view_mode">form</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+        </record>
+
+		<!--MENUITEMS-->
+        <menuitem id="menu_modulo_cine" name="Cinema" parent="" sequence="3"/>
+		<!--Administración-->
+        <menuitem id="menu_seccion_sala" name="Administración" parent="menu_modulo_cine"/>
+        <!--Salas-->
+        <menuitem id="menu_gestion_sala_lateral" name="Salas" parent="menu_seccion_sala" action="action_sala_form"/>
+        <!--Películas-->
+        <menuitem id="menu_gestion_pelicula_lateral" name="Peliculas" parent="menu_seccion_sala" action="action_pelicula_form"/>
+		<!--Socios-->
+        <menuitem id="menu_gestion_socio_lateral" name="Socios" parent="menu_seccion_sala" action="action_socio_form"/>
+		<!--Empleados-->
+        <menuitem id="menu_gestion_empleados_lateral" name="Empleados" parent="menu_seccion_sala" action="action_empleados_form"/>
+		
+		<!--SALAS-->
+		
+		<!--Form-->
+		<record id="sala_form_view" model="ir.ui.view">
+			<field name="name">salas.form</field>
+            <field name="model">salas</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Salas">
+                    <header>
+						<button name="confirm" string="Confirmar" states="draft" type="object"/>
+						<button name="cancel" string="Cancelar" states="draft,confirmed" type="object"/>
+						<button name="draft" string="Borrador" states="cancel" type="object"/>
+						<field name="state" widget="statusbar"/>
+					</header>
+					<sheet>
+						<group string="Salas">
+							<separator string="Información básica" colspan="4"/>
+							<field name="nombre"/>
+							<field name="capacidad"/>
+							<field name="filas" widget="one2many_list">
+                       			<tree editable="bottom">
+                        			<field name="n_butacas"/>
+                        		</tree>
+  							</field>
+							<separator string="Información adicional" colspan="4"/>
+							<field name="tresd"/>
+						</group>
+					</sheet>	
+                </form>
+            </field>
+		</record>
+		
+		<!--Tree-->
+		<!-- <record model ="ir.ui.view" id="sala_tree_view">
+			<field name="name">salas.tree</field>
+			<field name="model">salas</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Salas">
+					<field name="nombre"/>
+					<field name="capacidad"/>
+				</tree>
+			</field>
+			<xpath expr="filter[@string='Persons']" position='before'>
+				<filter name="salas" string="Salas 3D" domain="[('tresd','=',1)]"/>					
+			</xpath>
+		</record> -->
+		
+		<!--PELICULAS-->
+		
+		<!--Form-->
+		<record id="pelicula_form_view" model="ir.ui.view">
+			<field name="name">peliculas.form</field>
+            <field name="model">peliculas</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Peliculas">
+                    <header>
+						<button name="confirma" string="Confirmar" states="draft" type="object"/>
+						<button name="cancela" string="Cancelar" states="draft,confirmed" type="object"/>
+						<button name="drafta" string="Borrador" states="cancel" type="object"/>
+						<field name="estado" widget="statusbar"/>
+					</header>
+					<sheet>
+						<group string="Peliculas">
+							<field name="name"/>
+							<field name="state"/>
+							<field name="image" widget='image'/>
+						</group>
+						<notebook>
+							<page string="Descripción">
+								<field name="description"/>
+							</page>
+						</notebook>
+					</sheet>	
+                </form>
+            </field>
+		</record>
+		
+		<!--Tree-->
+		<record model ="ir.ui.view" id="peliculas_tree_view">
+			<field name="name">peliculas.tree</field>
+			<field name="model">peliculas</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Peliculas" default_group_by="state">
+					<field name="name"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+		
+		<!--Kanban-->
+		<record model ="ir.ui.view" id="gestion_peliculas_view">
+			<field name="name">peliculas.kanban</field>
+			<field name="model">peliculas</field>
+			<field name="type">kanban</field>
+			<field name="arch" type="xml">
+				<kanban default_group_by="state">
+					<field name="image"/>
+					<field name="name"/>
+					<templates>
+						<t t-name="kanban-box">
+							<div class="oe_product_vignette">
+								<a type="open">
+									<img class="oe_kanban_image" t-att-src="kanban_image('peliculas', 'image', record.id.value)"/>
+								</a>
+								<div class="oe_product_desc">
+									<h4>
+										<a type="edit">
+											<field name="name"/>
+										</a>
+									</h4>
+									<ul>
+										<li><field name="id"/></li>
+									</ul>
+								</div>
+							</div>
+						</t>
+					</templates>
+				</kanban>
+			</field>	
+		</record>
+		
+		<!--SOCIOS-->
+		
+		<!--Form-->
+		<record id="socio_form_view" model="ir.ui.view">
+			<field name="name">socios.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+			<field name="type">form</field>
+            <field name="arch" type="xml">
+				<field name="fax" position="replace"/>
+				<field name="website" position="replace"/>
+				<field name="category_id" position="replace"/>					
+				<page string="Internal Notes" position="attributes">
+					<attribute name='invisible'>1</attribute> 
+				</page>
+				<page string="Sales &amp; Purchases" position="attributes">
+					<attribute name='invisible'>1</attribute> 
+				</page>
+				<page string="Contacts" position="attributes">
+					<attribute name='invisible'>1</attribute> 
+				</page>
+				<page string="Accounting" position="attributes">
+					<attribute name='invisible'>1</attribute> 
+				</page>
+				<field name="is_company" position="replace">
+					<field name="is_company" invisible="1"/>
+				</field>
+				<field name="title" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+				<field name="parent_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+				<field name="function" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+				<label for="is_company" position="replace">
+					<label for="is_company" invisible="1"/>
+				</label>
+				<label for="name" position="replace">
+					<label for="name">Nombre</label>
+				</label>
+				<notebook>
+					<page string="Dar de alta socio">
+						<separator string="Alta nuevo socio"/>
+						<group string="Dar de alta:">
+							<field name="es_socio"/>
+						</group>
+					</page>
+				</notebook>		
+            </field>
+		</record>
+		
+		<!--Tree-->
+		<record model ="ir.ui.view" id="socio_tree_view">
+			<field name="name">socio.tree</field>
+			<field name="model">res.partner</field>
+			<field name="inherit_id" ref="base.view_partner_tree"/>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<field name="display_name" position="after">
+					<field name="es_socio"/>
+				</field>
+			</field>
+		</record>
+		
+		<!-- SEARCH de socios -->
+		<record model="ir.ui.view" id="res_partner_view_inherit_search">
+			<field name="name">Filtros de Socios</field>
+			<field name="model">res.partner</field>
+			<field name="inherit_id" ref="base.view_res_partner_filter" /> 
+			<field name="arch" type="xml">
+				<xpath expr="filter[@string='Persons']" position='before'>
+					<filter name="socios" string="Socios" domain="[('es_socio','=',1)]"/>    				        							
+				</xpath> 
+			</field>
+		</record>	
+
+		<!--Empleados-->
+		
+		<!--Form-->
+		<record id="empleados_form_view" model="ir.ui.view">
+			<field name="name">empleados.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+			<field name="type">form</field>
+            <field name="arch" type="xml">
+				<!--Elimino campos-->
+				<field name="category_ids" position="replace"/>
+				<page string="Public Information" position="replace"/>
+				<page string="HR Settings" position="replace"/>
+				<field name="work_phone" position="after">
+					<label for="contrato" string="Fecha de Contratación"/>
+					<br></br>
+					<field name="fecha_contratado"/>
+					<separator string="Salas"/>
+					<label for="sala_responsable" string="A cargo de:" options="{'no_create': True}"/>
+					<field name="responsable_sala" />
+				</field>
+			</field>
+		</record>
+		
+		<!--CARTEL-->
+		
+		<!--Kanban-->
+		<record model ="ir.ui.view" id="cartel_view">
+			<field name="name">cartel.kanban</field>
+			<field name="model">peliculas</field>
+			<field name="type">kanban</field>
+			<field name="arch" type="xml">
+				<kanban>
+					<field name="image"/>
+					<field name="name"/>
+					<field name="state"/>
+					<templates>
+						<t t-name="kanban-box">
+							<div class="oe_product_vignette" attrs="{'invisible': [('state', '!=', 'en cartel')]}">
+								<a type="open">
+									<img class="oe_kanban_image" t-att-src="kanban_image('peliculas', 'image', record.id.value)"/>
+								</a>
+								<div class="oe_product_desc">
+									<h4>
+										<a type="edit">
+											<field name="name"/>
+										</a>
+									</h4>
+									<ul>
+										<li><field name="id"/></li>
+									</ul>
+								</div>
+							</div>
+						</t>
+					</templates>
+				</kanban>
+			</field>	
+		</record>
+		
+	</data>
+</openerp>
